@@ -4,7 +4,7 @@ This is an RShiny App to monitor the financial markets using a series of sentime
 
 ### Data
 
-For the **S&P 500**, the US index representing top 500 companies for market capitalization, the indicators include
+For the **S&P 500**, the US index representing the top 500 companies for market capitalization, the indicators include
 
 * the **Volatility Index** (short and medium term)
 * the **Price Earnings Ratio** calculated using the CAPE method by Robert Shiller
@@ -12,7 +12,7 @@ For the **S&P 500**, the US index representing top 500 companies for market capi
 
 For the *Euro / Dollar* currency exchange, the indicators include
 
-* the *Commitment of Traders* on the Euro future contracts
+* the **Commitment of Traders** on the Euro future contracts
  
 ### Packages
 
