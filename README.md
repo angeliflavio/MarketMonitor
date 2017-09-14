@@ -9,8 +9,11 @@ For the **S&P 500**, the US index representing the top 500 companies for market 
 * the **Volatility Index** (short and medium term)
 * the **Price Earnings Ratio** calculated using the CAPE method by Robert Shiller
 * the **Google Trends** number of hits for *market correction*
+* the **AAII Investor Sentiment**, the survey from the American Association of Individual Investors showing the percentage of investors who are market bullish or bearish
+* the **US Consumer Sentiment** from the University of Michigan
+* the **Probability of Increase in Stock Markets** from the University of Michigan Consumer Survey 
 
-For the *Euro / Dollar* currency exchange, the indicators include
+For the **Euro / Dollar** currency exchange, the indicators include
 
 * the **Commitment of Traders** on the Euro future contracts
  

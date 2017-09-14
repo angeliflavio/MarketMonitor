@@ -23,8 +23,15 @@ shinyUI(
                                          dygraphOutput('googletrendd'),
                                          br(),
                                          dygraphOutput('googletrendm')
-                                     )
-                                     )
+                                     )),
+                            tabPanel('AAII Sentiment',dygraphOutput('aaii')),
+                            tabPanel('Consumer Sentiment',dygraphOutput('cons')),
+                            tabPanel('Probability of Increase in Markets',
+                                     verticalLayout(
+                                         p('University of Michigan Consumer Survey, Probability of Increase in Stock Markets.'),
+                                         br(),
+                                         dygraphOutput('prob')
+                                     ))
                         )),
                tabPanel('Help',includeMarkdown('help.md'))
                )
