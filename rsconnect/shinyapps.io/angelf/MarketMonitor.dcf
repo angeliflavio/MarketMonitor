@@ -3,8 +3,8 @@ title: MarketMonitor
 account: angelf
 server: shinyapps.io
 appId: 212555
-bundleId: 978629
+bundleId: 985389
 url: https://angelf.shinyapps.io/MarketMonitor/
-when: 1505231126.18283
+when: 1505684399.05409
 asMultiple: FALSE
 asStatic: FALSE

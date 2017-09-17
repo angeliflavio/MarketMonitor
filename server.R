@@ -3,18 +3,27 @@ library(quantmod)
 library(gtrendsR)
 library(dygraphs)
 
-# Euro COT data
-euro <- Quandl('CHRIS/CME_EC2')
-euro <- xts(euro[,c('Settle')],order.by = euro[,1])
-colnames(euro) <- c('euro')
-cot <- Quandl('CFTC/EC_F_L_ALL')
-cot <- xts(cot[,-1],order.by = cot[,1])
-datacot <- merge.xts(euro,cot[,c('Noncommercial Long','Noncommercial Short',
-                                 'Commercial Long','Commercial Short')],join = 'inner')
+Quandl.api_key('yoz2iiNXroUsDcsFzXiF')
 
 # S&P500 Index Future
-spx<-Quandl("CHRIS/CME_SP1")
-spx<-as.xts(spx$Last, order.by = spx$Date)
+spx<-Quandl("CHRIS/CME_SP1",type = 'xts')$Settle
+colnames(spx) <- c('spx')
+
+# Euro COT data
+euro <- Quandl('CHRIS/CME_EC2',type = 'xts')$Settle
+colnames(euro) <- c('euro')
+eurocot <- Quandl('CFTC/EC_F_L_ALL',type = 'xts')
+ eurocot <- merge.xts(euro,eurocot[,c('Noncommercial Long','Noncommercial Short',
+                                 'Commercial Long','Commercial Short')],join = 'inner')
+eurocot$Noncommercial.Net <- eurocot$Noncommercial.Long-eurocot$Noncommercial.Short
+eurocot$Commercial.Net <- eurocot$Commercial.Long-eurocot$Commercial.Short
+# S&P 500 COT data
+spxcot <- Quandl('CFTC/SPC_FO_L_ALL',type = 'xts')
+spxcot <- merge.xts(spx,spxcot[,c('Noncommercial Long','Noncommercial Short',
+                                 'Commercial Long','Commercial Short')],join = 'inner')
+spxcot$Noncommercial.Net <- spxcot$Noncommercial.Long-spxcot$Noncommercial.Short
+spxcot$Commercial.Net <- spxcot$Commercial.Long-spxcot$Commercial.Short
+
 
 # Function for downloading message
 downloading <- function(){
@@ -52,21 +61,24 @@ shinyServer(function(input,output){
         vix_s=as.xts(vix_s$Close,order.by = vix_s$Date)
         spxvix <- merge.xts(vix_m,vix_s,join = 'inner')
         spxvix <- merge.xts(spxvix,spx,join = 'inner')
-        dygraph(spxvix,main = 'S&P 500 Volatility') %>% 
-            dyRangeSelector() %>% dySeries('spx',axis='y2')
+        spxvix$diff <- spxvix$vix_m-spxvix$vix_s
+        d <- dygraph(spxvix[,c('spx',input$vix)],main = 'S&P 500 Volatility') %>% 
+                dyRangeSelector() %>% dySeries('spx',axis='y2')
+        if ('diff' %in% input$vix){d <- dySeries(d,'diff',fillGraph=T)}
+        d
     })
     
-    output$noncommercial <- renderDygraph({
+    output$cot <- renderDygraph({
         downloading()
-        dygraph(datacot[,c('euro','Noncommercial.Long','Noncommercial.Short')],
-                main = 'Euro Non Commercial COT') %>% 
-            dyRangeSelector() %>% dySeries('euro',axis='y2')
-    })
-    
-    output$commercial <- renderDygraph({
-        dygraph(datacot[,c('euro','Commercial.Long','Commercial.Short')],
-                main = 'Euro Commercial COT') %>% 
-            dyRangeSelector() %>% dySeries('euro',axis='y2')
+        if (input$cotmkt=='euro'){datacot <- eurocot}
+        else if (input$cotmkt=='spx'){datacot <- spxcot}
+        d <- dygraph(datacot[,c(input$cotmkt,input$cot)],main = 'Commitment of Traders') %>% 
+                dyRangeSelector()   
+        if (input$cotmkt=='euro'){d <- dySeries(d,'euro',axis='y2')}
+        else if (input$cotmkt=='spx'){d <- dySeries(d,'spx',axis = 'y2')}
+        if ('Commercial.Net' %in% input$cot){d <- dySeries(d,'Commercial.Net',fillGraph = T)}
+        if ('Noncommercial.Net' %in% input$cot){d <- dySeries(d,'Noncommercial.Net',fillGraph = T)}
+        d
     })
     
     output$googletrendm <- renderDygraph({
@@ -123,6 +135,71 @@ shinyServer(function(input,output){
             dySeries('diff2575',fillGraph=T)
     })
     
+    output$putcall <- renderDygraph({
+        downloading()
+        putcall <- Quandl('CBOE/SPX_PC',type = 'xts')
+        putcall <- putcall[,1]
+        putcall <- EMA(putcall,n=10)
+        equity <- Quandl('CBOE/EQUITY_PC',type = 'xts')
+        equity <- equity[,4]
+        equity <- EMA(equity,n=10)
+        total <- Quandl('CBOE/TOTAL_PC',type = 'xts')
+        total <- total[,4]
+        total <- EMA(total,n=10)
+        d <- merge.xts(spx['2006-10-01::'],equity)
+        d <- merge.xts(d,putcall)
+        d <- merge.xts(d,total)
+        colnames(d) <- c('spx','equity','putcall','total')
+        dygraph(d[,c('spx',input$putcall)],main = 'Put Call Ratio') %>% 
+            dyRangeSelector() %>% 
+            dySeries('spx',axis='y2') 
+    })
+    
+    output$cycles <- renderDygraph({
+        downloading()
+        getSymbols('^GSPC',from='1950-01-01')
+        p <- Cl(GSPC)
+        ma32 <- SMA(p,32)
+        d <- merge.xts(p,ma32)
+        colnames(d) <- c('p','ma32')
+        d$ma64 <- SMA(d$p,64)
+        d$cycle <- d$ma32-d$ma64
+        d$ma128 <- SMA(d$p,128)
+        d$cycle2 <- d$ma64-d$ma128
+        d$ma256 <- SMA(d$p,256)
+        d$cycle3 <- d$ma128-d$ma256
+        d$ma512 <- SMA(d$p,512)
+        d$cycle4 <- d$ma256-d$ma512
+        d$ma1024 <- SMA(d$p,1024)
+        d$cycle5 <- d$ma512-d$ma1024
+        d <- dygraph(d[,c('p',input$cycles)],main = 'Cycles') %>% 
+            dyRangeSelector() %>% dySeries('p',axis='y2')
+        if ('cycle1' %in% input$cycles){d <- dySeries(d,'cycle1',fillGraph = T)}
+        if ('cycle2' %in% input$cycles){d <- dySeries(d,'cycle2',fillGraph = T)}
+        if ('cycle3' %in% input$cycles){d <- dySeries(d,'cycle3',fillGraph = T)}
+        if ('cycle4' %in% input$cycles){d <- dySeries(d,'cycle4',fillGraph = T)}
+        if ('cycle5' %in% input$cycles){d <- dySeries(d,'cycle5',fillGraph = T)}
+        d
+    })
+    
+    output$ad <- renderDygraph({
+        downloading()
+        ad <- Quandl(c('URC/NYSE_ADV','URC/NYSE_DEC','URC/NYSE_ADV_VOL','URC/NYSE_DEC_VOL','URC/NYSE_52W_HI','URC/NYSE_52W_LO'),type = 'xts')
+        getSymbols('^GSPC',from='1950-01-01')
+        p <- Cl(GSPC)
+        ad <- merge.xts(p,ad)
+        ad <- na.omit(ad)
+        colnames(ad) <- c('p','numadv','numdec','voladv','voldec','numhig','numlow')
+        ad$num <- cumsum(ad$numadv-ad$numdec)
+        ad$vol <- cumsum(ad$voladv-ad$voldec)
+        ad$hl <- cumsum(ad$numhig-ad$numlow)
+        d <- dygraph(ad[,c('p',input$ad)],main = 'Market Breadth') %>% 
+            dyRangeSelector() %>% dySeries('p',axis='y2') 
+        if ('num' %in% input$ad){d <- dySeries(d,'num',fillGraph = T)}
+        if ('vol' %in% input$ad){d <- dySeries(d,'vol',fillGraph = T)}
+        if ('hl' %in% input$ad){d <- dySeries(d,'hl',fillGraph = T)}
+        d
+    })
 })
 
 
