@@ -1,0 +1,1 @@
+S&P500 Cycle Analysis using moving averages.

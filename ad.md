@@ -1,0 +1,1 @@
+[Advance/Decline](http://stockcharts.com/school/doku.php?id=chart_school:index_symbols:advance_decline_indi), the number and volume of stocks advancing or declining, and [New Highs/Lows](http://stockcharts.com/school/doku.php?id=chart_school:index_symbols:52_week_high_low), the number of stocks hitting new 52-weeks highs or lows.

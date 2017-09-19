@@ -1,0 +1,1 @@
+[Google Trends](https://trends.google.co.uk/trends/) popuarity of the search **Market Correction**.

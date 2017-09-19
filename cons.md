@@ -1,0 +1,1 @@
+US [Consumer Sentiment Index](https://en.wikipedia.org/wiki/University_of_Michigan_Consumer_Sentiment_Index) published by the University of Michigan.

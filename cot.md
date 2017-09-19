@@ -1,0 +1,1 @@
+Commitment of Traders reported by the US [CFTC](http://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm). Explanations on the indicators are available in the CFTC [Explanatory Notes](http://www.cftc.gov/MarketReports/CommitmentsofTraders/ExplanatoryNotes/index.htm).

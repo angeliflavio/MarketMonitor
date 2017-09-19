@@ -1,0 +1,1 @@
+Price Earnings ratio for the S&P 500, calculated using the Cyclically Adjusted Ratio [CAPE](https://en.wikipedia.org/wiki/Cyclically_adjusted_price-to-earnings_ratio) methodology.  

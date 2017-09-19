@@ -1,0 +1,1 @@
+American Association of Individual Investors [AAII](http://www.aaii.com/sentimentsurvey) Investor Sentiment Survey.

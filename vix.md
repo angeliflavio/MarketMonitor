@@ -1,0 +1,1 @@
+Volatility of the options on the S&P500 Index, measured by [VIX Short Term](http://www.cboe.com/products/vix-index-volatility/volatility-on-stock-indexes/cboe-short-term-volatility-index-vxst) and [VIX Medium Term](http://www.cboe.com/products/vix-index-volatility/volatility-on-stock-indexes/cboe-mid-term-volatility-index-vxmt).

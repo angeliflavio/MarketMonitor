@@ -1,0 +1,1 @@
+Probability of increase in stock markets in the next year, reported by the University of Michigan [Survey of Consumers](https://data.sca.isr.umich.edu/charts.php).
