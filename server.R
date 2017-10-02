@@ -56,6 +56,14 @@ goldcot <- merge.xts(gold,goldcot[,c('Noncommercial Long','Noncommercial Short',
                                   'Commercial Long','Commercial Short')],join = 'inner')
 goldcot$Noncommercial.Net <- goldcot$Noncommercial.Long-goldcot$Noncommercial.Short
 goldcot$Commercial.Net <- goldcot$Commercial.Long-goldcot$Commercial.Short
+# treasury cot
+bond <- spx
+colnames(bond) <- 'bond'
+bondcot <- Quandl('CFTC/US_FO_L_ALL',type = 'xts')
+bondcot <- merge.xts(bond,bondcot[,c('Noncommercial Long','Noncommercial Short',
+                                    'Commercial Long','Commercial Short')],join = 'inner')
+bondcot$Noncommercial.Net <- bondcot$Noncommercial.Long-bondcot$Noncommercial.Short
+bondcot$Commercial.Net <- bondcot$Commercial.Long-bondcot$Commercial.Short
 
 # Function for displaying 'downloading...' message
 downloading <- function(){
@@ -108,6 +116,7 @@ shinyServer(function(input,output){
         else if (input$cotmkt=='gbp'){datacot <- gbpcot}
         else if (input$cotmkt=='vix'){datacot <- vixcot}
         else if (input$cotmkt=='gold'){datacot <- goldcot}
+        else if (input$cotmkt=='bond'){datacot <- bondcot}
         d <- dygraph(datacot[,c(input$cotmkt,input$cot)],main = 'Commitment of Traders') %>% 
                 dyRangeSelector()   
         if (input$cotmkt=='euro'){d <- dySeries(d,'euro',axis='y2')}
@@ -116,6 +125,7 @@ shinyServer(function(input,output){
         else if (input$cotmkt=='gbp'){d <- dySeries(d,'gbp',axis='y2')}
         else if (input$cotmkt=='vix'){d <- dySeries(d,'vix',axis='y2')}
         else if (input$cotmkt=='gold'){d <- dySeries(d,'gold',axis='y2')}
+        else if (input$cotmkt=='bond'){d <- dySeries(d,'bond',axis='y2')}
         if ('Commercial.Net' %in% input$cot){d <- dySeries(d,'Commercial.Net',fillGraph = T)}
         if ('Noncommercial.Net' %in% input$cot){d <- dySeries(d,'Noncommercial.Net',fillGraph = T)}
         d
