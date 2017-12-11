@@ -1,10 +1,12 @@
 name: MarketMonitor
 title: MarketMonitor
+username:
 account: angelf
 server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
 appId: 212555
-bundleId: 1007293
+bundleId: 1128929
 url: https://angelf.shinyapps.io/MarketMonitor/
-when: 1506969622.21626
+when: 1513031959.25761
 asMultiple: FALSE
 asStatic: FALSE

@@ -94,6 +94,11 @@ shinyUI(
                                                             inline = T),
                                          br(),
                                          dygraphOutput('ad')
+                                     )),
+                            tabPanel('S&P500 Quarterly RSI',
+                                     verticalLayout(
+                                         br(),
+                                         dygraphOutput('rsiquarterly')
                                      ))
                         )),
                tabPanel('Help',includeMarkdown('help.md'))

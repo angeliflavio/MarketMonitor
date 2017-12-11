@@ -260,6 +260,18 @@ shinyServer(function(input,output){
         if ('hl' %in% input$ad){d <- dySeries(d,'hl',fillGraph = T)}
         d
     })
+    
+    output$rsiquarterly <- renderDygraph({
+        downloading()
+        getSymbols('^GSPC',from='1900-01-01')
+        p <- Cl(to.quarterly(GSPC))
+        rsi <- RSI(p,n=12)
+        d <- merge.xts(p,rsi)
+        colnames(d) <- c('spx','rsi')
+        dygraph(d) %>% dyRangeSelector() %>% 
+            dySeries('rsi',axis='y2') %>% 
+            dyAxis('y',logscale = T)
+    })
 })
 
 
