@@ -73,17 +73,6 @@ shinyUI(
                                          br(),
                                          dygraphOutput('putcall')
                                      )),
-                            tabPanel('S&P 500 Cycles',
-                                     verticalLayout(
-                                         includeMarkdown('cycles.md'),
-                                         br(),
-                                         checkboxGroupInput('cycles','Cycles Indicators',
-                                                            choiceNames = list('Cycle1','Cycle2','Cycle3','Cycle4','Cycle5','Speed1','Speed2','Speed3','Speed4','Speed5'),
-                                                            choiceValues = list('cycle1','cycle2','cycle3','cycle4','cycle5','speed1','speed2','speed3','speed4','speed5'),
-                                                            inline = T),
-                                         br(),
-                                         dygraphOutput('cycles')
-                                     )),
                             tabPanel('Advance Decline',
                                      verticalLayout(
                                          includeMarkdown('ad.md'),
