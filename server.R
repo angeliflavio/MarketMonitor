@@ -2,15 +2,24 @@ library(Quandl)
 library(quantmod)
 library(gtrendsR)
 library(dygraphs)
+library(alphavantager)
+library(dplyr)
 
+# api keys
 Quandl.api_key('yoz2iiNXroUsDcsFzXiF')
+av_api_key('14QN80MEWU581HI7')
+
 
 # S&P500 Index Future
 spx<-Quandl("CHRIS/CME_SP1",type = 'xts')$Settle
 colnames(spx) <- c('spx')
 
 # Euro COT data
-euro <- Quandl('CHRIS/CME_EC2',type = 'xts')$Settle
+#euro <- Quandl('CHRIS/CME_EC2',type = 'xts')$Settle
+euro_tbl <- av_get("EUR/USD", av_fun = "FX_DAILY", outputsize = "full")
+euro <- xts(euro_tbl, euro_tbl$timestamp)
+euro <- euro$close
+remove(euro_tbl)
 colnames(euro) <- c('euro')
 eurocot <- Quandl('CFTC/099741_FO_L_ALL',type = 'xts')
 eurocot <- merge.xts(euro,eurocot[,c('Noncommercial Long','Noncommercial Short',
