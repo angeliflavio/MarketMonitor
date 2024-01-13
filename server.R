@@ -11,7 +11,8 @@ av_api_key('14QN80MEWU581HI7')
 
 
 # S&P500 Index Future
-spx<-Quandl("CHRIS/CME_SP1",type = 'xts')$Settle
+spx <- getSymbols("^GSPC",auto.assign = FALSE, from = "1980-01-01")
+spx <- spx$GSPC.Adjusted
 colnames(spx) <- c('spx')
 
 # Euro COT data
@@ -41,7 +42,11 @@ yencot <- merge.xts(yen,yencot[,c('Noncommercial Long','Noncommercial Short',
 yencot$Noncommercial.Net <- yencot$Noncommercial.Long-yencot$Noncommercial.Short
 yencot$Commercial.Net <- yencot$Commercial.Long-yencot$Commercial.Short
 # british pound
-gbp <- Quandl('CHRIS/CME_BP2',type = 'xts')$Settle
+#gbp <- Quandl('CHRIS/CME_BP2',type = 'xts')$Settle
+gbp_tibble <- av_get("GBP/USD", av_fun = "FX_DAILY", outputsize="full")
+gbp <- xts(gbp_tibble, gbp_tibble$timestamp)
+gbp <- gbp$close
+remove(gbp_tibble)
 colnames(gbp) <- c('gbp')
 gbpcot <- Quandl('CFTC/096742_FO_L_ALL',type = 'xts')
 gbpcot <- merge.xts(gbp,gbpcot[,c('Noncommercial Long','Noncommercial Short',

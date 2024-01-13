@@ -5,8 +5,7 @@ account: angelf
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 212555
-bundleId: 1225221
+bundleId: 8117470
 url: https://angelf.shinyapps.io/MarketMonitor/
-when: 1518731586.86703
 asMultiple: FALSE
 asStatic: FALSE
