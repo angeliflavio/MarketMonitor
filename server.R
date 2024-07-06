@@ -109,12 +109,17 @@ shinyServer(function(input,output){
     
     output$vix <- renderDygraph({
         downloading()
-        vix_m=Quandl('CBOE/VXMT')
-        vix_m=as.xts(vix_m$Close,order.by = vix_m$Date)
-        vix_s=Quandl('CBOE/VXST')
-        vix_s=as.xts(vix_s$Close,order.by = vix_s$Date)
+        #vix_m=Quandl('CBOE/VXMT')
+        #vix_m=as.xts(vix_m$Close,order.by = vix_m$Date)
+        vix_m <- getSymbols("^VIX6M", auto.assign = F)
+        vix_m <- vix_m$VIX6M.Close
+        vix_s <- getSymbols("^VIX9D", auto.assign = F)
+        vix_s <- vix_s$VIX9D.Close
+        #vix_s=Quandl('CBOE/VXST')
+        #vix_s=as.xts(vix_s$Close,order.by = vix_s$Date)
         spxvix <- merge.xts(vix_m,vix_s,join = 'inner')
         spxvix <- merge.xts(spxvix,spx,join = 'inner')
+        colnames(spxvix) <- c("vix_m", "vix_s", "spx")
         spxvix$diff <- spxvix$vix_m-spxvix$vix_s
         d <- dygraph(spxvix[,c('spx',input$vix)],main = 'S&P 500 Volatility') %>% 
                 dyRangeSelector() %>% dySeries('spx',axis='y2')
